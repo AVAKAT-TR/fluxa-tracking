@@ -17,15 +17,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SEGURIDAD
 # =========================
 
-# ⚠️ En producción esto debe venir desde variables de entorno
-# En local dejamos el valor que ya usas (NO se borra)
+# ⚠️ En producción (Render) esto viene desde variables de entorno
+# En local se usa el valor por defecto (NO se borra)
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
     "django-insecure-@p1p-)dja)dwx&5tl+2o2ue5p5^5+)$_$z9mn4wn-)$zyq5zdq"
 )
 
 # 🔧 DEBUG
-# True en local, Render puede sobreescribir con env var
+# - Local: True
+# - Render: se fuerza a False vía variable de entorno
 DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
 
@@ -33,9 +34,19 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 # HOSTS
 # =========================
 
-# 👉 Lo que ya usas (necesario para acceder desde celular / LAN)
-# En Render también funciona con "*"
-ALLOWED_HOSTS = ["*"]
+# ✔ Permite:
+# - localhost
+# - acceso desde celular (LAN)
+# - Render (*.onrender.com)
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    ".onrender.com",
+]
+
+# Si estás en desarrollo LAN intenso y lo necesitas,
+# puedes usar "*" temporalmente, pero NO es ideal en producción.
+# ALLOWED_HOSTS = ["*"]
 
 
 # =========================
@@ -49,7 +60,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # 👇 tu app
+    # 👇 tu app principal
     "tracking",
 ]
 
@@ -59,7 +70,10 @@ INSTALLED_APPS = [
 # =========================
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+
+    # ⚠️ requerido para sesiones / login
     "django.contrib.sessions.middleware.SessionMiddleware",
+
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -72,7 +86,6 @@ MIDDLEWARE = [
 # URLS / WSGI
 # =========================
 ROOT_URLCONF = "fluxa.urls"
-
 WSGI_APPLICATION = "fluxa.wsgi.application"
 
 
@@ -83,14 +96,17 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
 
-        # 👇 esto lo usas y está bien
+        # 👇 lo usas y está perfecto
         "DIRS": [BASE_DIR / "templates"],
 
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
-                "django.template.context_processors.request",  # ⚠️ necesario para request.user
+
+                # ⚠️ necesario para request.user, login, logout
+                "django.template.context_processors.request",
+
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
@@ -102,8 +118,8 @@ TEMPLATES = [
 # =========================
 # DATABASE
 # =========================
-# 👉 SQLite para alpha / beta está perfecto
-# Render también lo permite
+# ✔ SQLite está bien para alpha / beta
+# ✔ Render lo permite
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -138,30 +154,27 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-# 👉 esto ya lo usas para tracking/static
+# 👉 tus estáticos locales (tracking/static)
 STATICFILES_DIRS = [
     BASE_DIR / "tracking" / "static",
 ]
 
-# 👉 Render necesita este directorio
+# 👉 requerido por Render (collectstatic)
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# 👉 storage estándar (bien para ahora)
+# 👉 storage estándar (ok para ahora)
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 
 # =========================
 # AUTH / LOGIN
 # =========================
-
 LOGIN_URL = "tracking:login"
 LOGIN_REDIRECT_URL = "tracking:products"
 LOGOUT_REDIRECT_URL = "tracking:login"
 
 
 # =========================
-# SEGURIDAD EXTRA (NO ROMPE NADA)
+# DJANGO DEFAULTS / WARNINGS
 # =========================
-
-# Evita warnings en Render
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
