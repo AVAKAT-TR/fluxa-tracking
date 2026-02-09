@@ -1,0 +1,19 @@
+{% extends "tracking/base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<h1>Ingreso</h1>
+
+<form method="post" class="login-form">
+  {% csrf_token %}
+
+  <label>Usuario</label>
+  <input type="text" name="username" required>
+
+  <label>Contraseña</label>
+  <input type="password" name="password" required>
+
+  <button type="submit">Entrar</button>
+</form>
+{% endblock %}

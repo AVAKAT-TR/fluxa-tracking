@@ -1,0 +1,55 @@
+{% extends "tracking/base.html" %}
+{% block title %}Nuevo producto{% endblock %}
+
+{% block content %}
+<h1>Nuevo producto</h1>
+
+<form method="post" class="content-card">
+  {% csrf_token %}
+
+  <label>Código</label>
+  <input name="code" required>
+
+  <label>Producto</label>
+  <input name="product_type" required>
+
+  <label>Variante</label>
+  <input name="variant">
+
+  <label>Medida</label>
+  <input name="size">
+
+  <hr>
+
+  <h3>Estado inicial</h3>
+
+  <label>Estado</label>
+  <select name="status" required>
+    {% for v, l in status_choices %}
+      <option value="{{ v }}">{{ l }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Encargada</label>
+  <select name="encargada" required>
+    {% for e in encargadas %}
+      <option value="{{ e.id }}">{{ e.name }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Fecha salida</label>
+  <input type="date" name="fecha_salida" required>
+
+  <label>Fecha llegada</label>
+  <input type="date" name="fecha_llegada">
+
+  <label>Comentario</label>
+  <textarea name="comment" placeholder="Opcional"></textarea>
+
+  <button class="btn-primary">Crear producto</button>
+</form>
+
+<a href="{% url 'tracking:products' %}" class="btn-secondary">
+  ← Volver a productos
+</a>
+{% endblock %}

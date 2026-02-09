@@ -1,0 +1,110 @@
+{% extends "tracking/base.html" %}
+{% block title %}Vendidos{% endblock %}
+
+{% block content %}
+<div class="header-row">
+  <h1>Productos vendidos</h1>
+
+  <a href="{% url 'tracking:products' %}" class="btn-secondary">
+    ← Volver a productos
+  </a>
+</div>
+
+<!-- =========================
+     FILTROS (igual a Productos)
+========================= -->
+<div class="content-card filters-row">
+  <form method="get">
+
+    <!-- Encargada -->
+    <label>
+      Encargada
+      <select name="encargada">
+        <option value="">Todas</option>
+        {% for e in encargadas %}
+          <option value="{{ e.id }}"
+            {% if filters.encargada == e.id|stringformat:"s" %}selected{% endif %}>
+            {{ e.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <!-- Medida -->
+    <label>
+      Medida
+      <select name="size">
+        <option value="">Todas</option>
+        {% for s in sizes %}
+          <option value="{{ s }}"
+            {% if filters.size == s %}selected{% endif %}>
+            {{ s }}
+          </option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <!-- Producto -->
+    <label>
+      Producto
+      <input type="text"
+             name="product_type"
+             value="{{ filters.product_type|default:'' }}"
+             placeholder="Ej: Plumón">
+    </label>
+
+    <button class="btn-primary" type="submit">
+      Filtrar
+    </button>
+
+    <a href="{% url 'tracking:vendidos' %}" class="btn-secondary">
+      Limpiar
+    </a>
+
+  </form>
+</div>
+
+<p style="margin:.5rem 0; font-size:14px;">
+  Mostrando <strong>{{ total }}</strong> productos vendidos
+</p>
+
+<!-- =========================
+     TABLA
+========================= -->
+<div class="content-card">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Producto</th>
+        <th>Variante</th>
+        <th>Medida</th>
+        <th>Encargada</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.product.code }}</td>
+        <td>{{ row.product.product_type }}</td>
+        <td>{{ row.product.variant }}</td>
+        <td>{{ row.product.size }}</td>
+        <td>{{ row.encargada|default:"—" }}</td>
+        <td>
+          <a href="{% url 'tracking:product_detail' row.product.id %}">
+            Ver
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6">
+          No hay productos vendidos con estos filtros
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

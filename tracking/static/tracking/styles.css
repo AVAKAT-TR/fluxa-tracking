@@ -1,0 +1,232 @@
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f6f6f6;
+}
+
+/* =====================
+   LAYOUT
+===================== */
+.app-layout {
+  display: flex;
+  height: 100vh; /* 🔴 antes min-height */
+}
+
+/* =====================
+   SIDEBAR (DESKTOP)
+===================== */
+.sidebar {
+  width: 240px;
+  background: #3f6f86;
+  color: #fff;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 16px;
+  font-weight: 700;
+  background: #355f73;
+}
+
+.sidebar-nav a {
+  display: block;
+  padding: 12px 16px;
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+  background: #2e5365;
+}
+
+/* =====================
+   MAIN CONTENT
+===================== */
+.main-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;   /* 🔴 scroll va aquí */
+  overflow-x: hidden;
+}
+
+/* =====================
+   CARD
+===================== */
+.content-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  margin-bottom: 16px;
+}
+
+/* =====================
+   FILTERS
+===================== */
+.filters-row form {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+
+.filters-row label {
+  font-size: 13px;
+}
+
+/* =====================
+   TABLE
+===================== */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.admin-table thead {
+  background: #f0f0f0;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: left;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* =====================
+   STATUS
+===================== */
+.status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status.cortando { background: #fff3cd; }
+.status.cosiendo { background: #e2f0ff; }
+.status.bordando { background: #fde2ff; }
+.status.llenado  { background: #e6ffe6; }
+.status.vendido  { background: #ddd; }
+
+/* =====================
+   BUTTONS
+===================== */
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  padding: 10px 14px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-primary {
+  background: #3f6f86;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #ddd;
+  color: #000;
+}
+
+.btn-danger {
+  background: #c0392b;
+  color: #fff;
+}
+
+/* =====================
+   RESPONSIVE (MOBILE)
+===================== */
+@media (max-width: 768px) {
+
+  /* Layout pasa a columna */
+  .app-layout {
+    flex-direction: column;
+    height: auto; /* 🔴 vuelve a comportamiento original */
+  }
+
+  /* Sidebar arriba */
+  .sidebar {
+    width: 100%;
+  }
+
+  .sidebar-header {
+    text-align: center;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .sidebar-nav a {
+    flex: 1 1 50%;
+    text-align: center;
+    border-bottom: none;
+    border-right: 1px solid rgba(255,255,255,0.2);
+  }
+
+  /* Main padding reducido */
+  .main-content {
+    padding: 16px;
+    overflow: visible;
+  }
+
+  /* Filters en columna */
+  .filters-row form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Botones grandes (dedo-friendly) */
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
+
+/* =========================
+   TABLE RESPONSIVE (MOBILE)
+========================= */
+
+.content-card {
+  overflow-x: auto;
+}
+
+/* evita que la tabla se aplaste */
+.admin-table {
+  min-width: 650px;
+}
+
+/* mejora lectura en mobile */
+@media (max-width: 768px) {
+  .admin-table th,
+  .admin-table td {
+    white-space: nowrap;
+    font-size: 13px;
+  }
+}
+
+
+

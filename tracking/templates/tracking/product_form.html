@@ -1,0 +1,31 @@
+{% extends "tracking/base.html" %}
+{% block title %}Nuevo producto{% endblock %}
+
+{% block content %}
+<h1>Nuevo producto</h1>
+
+<form method="post" class="content-card">
+  {% csrf_token %}
+
+  <label>Código</label>
+  <input name="code" required>
+
+  <label>Producto</label>
+  <input name="product_type" value="Plumón">
+
+  <label>Variante</label>
+  <input name="variant">
+
+  <label>Medida</label>
+  <input name="size">
+
+  <label>Encargada inicial</label>
+  <select name="encargada">
+    {% for e in encargadas %}
+      <option value="{{ e.id }}">{{ e.name }}</option>
+    {% endfor %}
+  </select>
+
+  <button class="btn-primary">Crear</button>
+</form>
+{% endblock %}

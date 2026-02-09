@@ -1,0 +1,71 @@
+{% extends "tracking/base.html" %}
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+<h1>Productos</h1>
+
+<div class="content-card">
+
+  <div class="filters-row">
+    <form method="get">
+      <label>Estado</label>
+      <select name="status">
+        <option value="">Todos</option>
+        {% for value, label in status_choices %}
+          <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>
+            {{ label }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <label>Encargada</label>
+      <select name="encargada">
+        <option value="">Todas</option>
+        {% for e in encargadas %}
+          <option value="{{ e.id }}" {% if request.GET.encargada == e.id|stringformat:"s" %}selected{% endif %}>
+            {{ e.name }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <button type="submit">Aplicar</button>
+    </form>
+  </div>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Producto</th>
+        <th>Variante</th>
+        <th>Medida</th>
+        <th>Estado</th>
+        <th>Encargada</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in products %}
+      <tr>
+        <td>{{ p.code }}</td>
+        <td>{{ p.product_type }}</td>
+        <td>{{ p.variant }}</td>
+        <td>{{ p.size }}</td>
+        <td>
+          <span class="status {{ p.current_status|lower }}">
+            {{ p.current_status }}
+          </span>
+        </td>
+        <td>{{ p.current_encargada }}</td>
+        <td>{{ p.created_at|date:"d/m/Y" }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7">No hay productos</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+{% endblock %}

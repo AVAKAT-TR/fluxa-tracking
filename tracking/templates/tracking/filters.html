@@ -1,0 +1,75 @@
+<div class="content-card filters-row">
+  <form method="get" action="{{ filter_action }}">
+
+    {% if show_status %}
+    <label>
+      Estado
+      <select name="status">
+        <option value="">Todos</option>
+        {% for v,l in status_choices %}
+          <option value="{{ v }}"
+            {% if filters.status == v %}selected{% endif %}>
+            {{ l }}
+          </option>
+        {% endfor %}
+      </select>
+    </label>
+    {% endif %}
+
+    {% if show_encargada %}
+    <label>
+      Encargada
+      <select name="encargada">
+        <option value="">Todas</option>
+        {% for e in encargadas %}
+          <option value="{{ e.id }}"
+            {% if filters.encargada == e.id|stringformat:"s" %}selected{% endif %}>
+            {{ e.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </label>
+    {% endif %}
+
+    {% if show_size %}
+    <label>
+      Medida
+      <select name="size">
+        <option value="">Todas</option>
+        {% for s in sizes %}
+          <option value="{{ s }}"
+            {% if filters.size == s %}selected{% endif %}>
+            {{ s }}
+          </option>
+        {% endfor %}
+      </select>
+    </label>
+    {% endif %}
+
+    {% if show_product_type %}
+    <label>
+      Producto
+      <input type="text"
+             name="product_type"
+             value="{{ filters.product_type|default:'' }}"
+             placeholder="Ej: Plumón">
+    </label>
+    {% endif %}
+
+    <button class="btn-primary" type="submit">
+      Filtrar
+    </button>
+
+    {% if show_export %}
+    <a href="{{ export_url }}?{{ request.GET.urlencode }}"
+       class="btn-secondary">
+      ⬇ Exportar CSV
+    </a>
+    {% endif %}
+
+    <a href="{{ clear_url }}" class="btn-secondary">
+      Limpiar
+    </a>
+
+  </form>
+</div>

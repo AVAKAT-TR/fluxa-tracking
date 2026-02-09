@@ -1,0 +1,170 @@
+{% extends "tracking/base.html" %}
+{% load static %}
+
+{% block title %}Producto {{ product.code }}{% endblock %}
+
+{% block content %}
+<h1>Código {{ product.code }}</h1>
+
+<!-- =========================
+     EDITAR DATOS DEL PRODUCTO
+========================= -->
+<div class="content-card">
+  <h3>Editar datos del producto</h3>
+
+  <form id="product-form"
+        data-url="{% url 'tracking:api_update_product' product.id %}">
+    {% csrf_token %}
+
+    <label>Producto</label>
+    <input type="text"
+           name="product_type"
+           value="{{ product.product_type }}"
+           required>
+
+    <label>Variante</label>
+    <input type="text"
+           name="variant"
+           value="{{ product.variant }}"
+           required>
+
+    <label>Medida</label>
+    <input type="text"
+           name="size"
+           value="{{ product.size }}"
+           required>
+
+    <button type="submit" class="btn-primary">
+      Guardar cambios
+    </button>
+  </form>
+</div>
+
+<!-- =========================
+     RESUMEN
+========================= -->
+<div class="content-card">
+  <p><strong>Estado actual:</strong> {{ current.status|default:"—" }}</p>
+  <p><strong>Encargada actual:</strong> {{ current.assigned_to|default:"—" }}</p>
+
+  <div style="margin-top:1rem; display:flex; gap:1rem;">
+    <a href="{% url 'tracking:products' %}" class="btn-secondary">
+      ← Volver a productos
+    </a>
+
+    <button type="button"
+            class="btn-danger"
+            onclick="deleteProduct({{ product.id }})">
+      Eliminar producto
+    </button>
+  </div>
+</div>
+
+<!-- =========================
+     FORM ESTADO
+========================= -->
+<div class="content-card">
+  <h3 id="form-title">Modificar estado del producto</h3>
+
+  <form id="process-form"
+        method="post"
+        data-create-url="{% url 'tracking:api_add_process' product.id %}">
+    {% csrf_token %}
+
+    <input type="hidden" id="process-id" name="process_id">
+
+    <label>Estado</label>
+    <select name="status" required>
+      {% for v, l in status_choices %}
+        <option value="{{ v }}"
+          {% if current and current.status == v %}selected{% endif %}>
+          {{ l }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <label>Encargada</label>
+    <select name="encargada" required>
+      {% for e in encargadas %}
+        <option value="{{ e.id }}"
+          {% if current and current.assigned_to_id == e.id %}selected{% endif %}>
+          {{ e.name }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <label>Fecha salida</label>
+    <input type="date"
+           name="fecha_salida"
+           value="{% if current %}{{ current.date_out|date:'Y-m-d' }}{% endif %}"
+           required>
+
+    <label>Fecha llegada</label>
+    <input type="date"
+           name="fecha_llegada"
+           value="{% if current and current.date_in %}{{ current.date_in|date:'Y-m-d' }}{% endif %}">
+
+    <label>Comentario</label>
+    <textarea name="comment"></textarea>
+
+    <button type="submit" class="btn-primary">
+      Guardar estado
+    </button>
+  </form>
+</div>
+
+<!-- =========================
+     HISTORIAL
+========================= -->
+<div class="content-card">
+  <h3>Historial</h3>
+
+  {% if history %}
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Salida</th>
+        <th>Llegada</th>
+        <th>Estado</th>
+        <th>Encargada</th>
+        <th>Comentario</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for h in history %}
+      <tr id="process-{{ h.id }}">
+        <td>{{ h.date_out|date:"Y-m-d" }}</td>
+        <td>{{ h.date_in|date:"Y-m-d"|default:"—" }}</td>
+        <td>{{ h.status }}</td>
+        <td>{{ h.assigned_to }}</td>
+        <td>{{ h.comment }}</td>
+        <td style="display:flex; gap:.5rem;">
+          <button type="button"
+                  class="btn-secondary"
+                  onclick="editProcess(
+                    {{ h.id }},
+                    '{{ h.status }}',
+                    '{{ h.assigned_to_id }}',
+                    '{{ h.date_out|date:'Y-m-d' }}',
+                    '{{ h.date_in|date:'Y-m-d' }}',
+                    `{{ h.comment|escapejs }}`
+                  )">
+            Editar
+          </button>
+
+          <button type="button"
+                  class="btn-danger"
+                  onclick="deleteProcess({{ h.id }})">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+
+<script src="{% static 'tracking/app.js' %}"></script>
+{% endblock %}

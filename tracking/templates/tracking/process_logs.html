@@ -1,0 +1,74 @@
+{% extends "tracking/base.html" %}
+{% block title %}Historial de procesos{% endblock %}
+
+{% block content %}
+<div class="header-row">
+  <h1>Historial global de procesos</h1>
+
+  <a href="{% url 'tracking:products' %}"
+     class="btn-secondary">
+    ← Volver a productos
+  </a>
+</div>
+
+<div class="content-card">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Producto</th>
+        <th>Variante</th>
+        <th>Medida</th>
+        <th>Estado</th>
+        <th>Encargada</th>
+        <th>Fecha salida</th>
+        <th>Fecha llegada</th>
+        <th>Comentario</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td>{{ log.product.code }}</td>
+        <td>{{ log.product.product_type }}</td>
+        <td>{{ log.product.variant }}</td>
+        <td>{{ log.product.size }}</td>
+
+        <td>{{ log.status }}</td>
+        <td>{{ log.assigned_to }}</td>
+
+        <td>
+          {{ log.date_out|date:"d/m/Y" }}
+        </td>
+
+        <td>
+          {% if log.date_in %}
+            {{ log.date_in|date:"d/m/Y" }}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+
+        <td>
+          {{ log.comment|default:"—" }}
+        </td>
+
+        <td>
+          <a href="{% url 'tracking:product_detail' log.product.id %}">
+            Ver producto
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="10">
+          No hay procesos registrados
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
